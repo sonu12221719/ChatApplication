@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: [process.env.CLIENT_URL, 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }))
@@ -20,7 +20,7 @@ connectDB();
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: [process.env.CLIENT_URL, 'http://localhost:5173'],
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         credentials: true,
     },
