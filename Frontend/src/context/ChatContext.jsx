@@ -19,12 +19,8 @@ export const ChatProvider = ({children})=>{
     const [isOnline, setIsOnline] = useState(false);
     const [onlineUsers, setOnlineUsers] = useState([]);
 
-<<<<<<< HEAD
 
-    const url = 'https://chatapplication-1-dqkc.onrender.com';
-=======
     const url = import.meta.env.VITE_BACKEND_URL;
->>>>>>> d37e5da (minor changes in frontend like adding .env file)
     const token = localStorage.getItem('token');
    
     

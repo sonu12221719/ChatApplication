@@ -1,8 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState,useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
-import { useEffect } from "react";
 
 const AuthContext = createContext();
 
@@ -18,11 +17,9 @@ export const AuthProvider = ({children})=>{
     const token = localStorage.getItem('token');
 
 
-<<<<<<< HEAD
-    const url ='https://chatapplication-1-dqkc.onrender.com/api/auth'
-=======
-    const url = import.meta.env.backend_url;
->>>>>>> d37e5da (minor changes in frontend like adding .env file)
+
+    const url = import.meta.env.VITE_BACKEND_URL;
+
 
     useEffect(()=>{
         const loadUserFromToken = async () => {
