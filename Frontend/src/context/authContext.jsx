@@ -18,7 +18,7 @@ export const AuthProvider = ({children})=>{
     const token = localStorage.getItem('token');
 
 
-    const url ='http://localhost:3000/api/auth'
+    const url ='https://chatapplication-1-dqkc.onrender.com/api/auth'
 
     useEffect(()=>{
         const loadUserFromToken = async () => {
