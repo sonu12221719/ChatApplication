@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useContext,createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+import { assets } from '../assets/assessts';
 import { useAuth } from "./authContext";
-
 const ChatContext = createContext();
 
 export const useChat =()=> useContext(ChatContext);
@@ -13,11 +14,47 @@ export const ChatProvider = ({children})=>{
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [messages, setMessages] = useState([]);
     const [messageInput,setMessageInput] = useState('');
+    const sendMessageaudio = new Audio(assets.sendedMessageAudio);
+    const receiveMessageaudio = new Audio(assets.receivedMessageAudio);
+    const [isOnline, setIsOnline] = useState(false);
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
 
     const url = 'http://localhost:3000';
     const token = localStorage.getItem('token');
     
+
+    // Socket.io setup
+    const socketRef = useRef();
+    useEffect(() => {
+        socketRef.current = io(url, {
+            auth: { token },
+        });
+        if (user) {
+            socketRef.current.emit('new-user-joined', user.name);
+            setIsOnline(true);
+        }
+        socketRef.current.on('receive', (data) => {
+            setMessages((prev) => [...prev, { messages: data.message, senderId: 'other', _id: Date.now() }]);
+            receiveMessageaudio.play();
+        });
+        socketRef.current.on('user-joined', (name) => {
+            if (user && name === user.name) setIsOnline(true);
+        });
+        socketRef.current.on('left', (name) => {
+            if (user && name === user.name) setIsOnline(false);
+        });
+        socketRef.current.on('disconnect', () => {
+            setIsOnline(false);
+        });
+        socketRef.current.on('online-users', (users) => {
+            setOnlineUsers(users);
+        });
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, [user]);
+
 
     useEffect(()=>{
         getAllChats();
@@ -61,7 +98,7 @@ export const ChatProvider = ({children})=>{
 
     const sendMessage = async()=>{
         try {
-            const response = await axios.post( `${url}/api/chat/send/${selectedUserId}`,
+            await axios.post( `${url}/api/chat/send/${selectedUserId}`,
                 {
                     message: messageInput,
                 },{
@@ -69,8 +106,11 @@ export const ChatProvider = ({children})=>{
                     Authorization:`Bearer ${token}`
                 }
             });
-            
-            console.log(response);
+            // Emit socket event for real-time
+            if (socketRef.current) {
+                socketRef.current.emit('send', messageInput);
+                sendMessageaudio.play();
+            }
             setMessageInput('');
             
         } catch (error) {
@@ -87,7 +127,10 @@ export const ChatProvider = ({children})=>{
             messages,
             sendMessage,
             messageInput,
-            setMessageInput
+            setMessageInput,
+            socket: socketRef.current,
+            isOnline,
+            onlineUsers
             }}>
             {children}
         </ChatContext.Provider>

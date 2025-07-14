@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { IoSend } from "react-icons/io5";
 import { useChat } from "../context/ChatContext";
 import { useAuth } from "../context/authContext";
@@ -6,6 +6,14 @@ import { useAuth } from "../context/authContext";
 const MessageArea = () => {
   const { messages, sendMessage, messageInput, setMessageInput } = useChat();
   const { user } = useAuth();
+  const messagesEndRef = useRef(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <div className="flex flex-col w-full px-10 h-full bg-white border-l border-gray-300">
@@ -18,14 +26,15 @@ const MessageArea = () => {
           <div
             key={msg._id}
             className={`max-w-xs px-4 py-2 rounded-lg ${
-              msg.senderId === user._id
+              msg.senderId === user._id || msg.name === user?.name
                 ? "bg-blue-400 text-white self-end"
                 : "bg-gray-200 self-start"
             }`}
           >
-            {msg.messages}
+            {msg.messages || msg.message}
           </div>
         )))}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input area */}

@@ -1,10 +1,12 @@
 import React from "react";
 import { IoSearch } from "react-icons/io5";
 import { useAuth } from "../context/authContext";
+import { useChat } from "../context/ChatContext";
 
 const Navbar = () => {
   
   const {user,searchUser,input,setInput}=useAuth();
+  const { isOnline } = useChat();
 
 
   const handleChange = async (e)=>{
@@ -38,10 +40,10 @@ const Navbar = () => {
           <p className="font-bold items-end">{user?.name}</p>
 
           <div className="flex items-center space-x-2">
-            {/* Green dot */}
-            <span className="w-3 h-3 bg-green-500 rounded-full inline-block"></span>
+            {/* Status dot */}
+            <span className={`w-3 h-3 rounded-full inline-block ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></span>
 
-            <p className="text-sm text-gray-600">online</p>
+            <p className="text-sm text-gray-600">{isOnline ? 'online' : 'offline'}</p>
           </div>
         </div>
 
