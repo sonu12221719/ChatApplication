@@ -18,7 +18,11 @@ export const AuthProvider = ({children})=>{
     const token = localStorage.getItem('token');
 
 
+<<<<<<< HEAD
     const url ='https://chatapplication-1-dqkc.onrender.com/api/auth'
+=======
+    const url = import.meta.env.backend_url;
+>>>>>>> d37e5da (minor changes in frontend like adding .env file)
 
     useEffect(()=>{
         const loadUserFromToken = async () => {
@@ -28,7 +32,7 @@ export const AuthProvider = ({children})=>{
             const decoded = jwtDecode(token);
             const userId = decoded.id;
 
-            const userRes = await axios.get(`${url}/user/${userId}`, {
+            const userRes = await axios.get(`${url}/api/auth/user/${userId}`, {
                 headers: {
                 Authorization: `Bearer ${token}`,
                 },
@@ -46,7 +50,7 @@ export const AuthProvider = ({children})=>{
     const register = async (userData)=>{
         setLoading(true);
         try {
-            const response = await axios.post(`${url}/register`, userData);
+            const response = await axios.post(`${url}/api/auth/register`, userData);
             console.log(response.data.user);
             
             // setUser(response.data.user);
@@ -61,7 +65,7 @@ export const AuthProvider = ({children})=>{
     const login = async (userData)=>{
         setLoading(true);
         try {
-            const response =await axios.post(`${url}/login`, userData);
+            const response =await axios.post(`${url}/api/auth/login`, userData);
             const {user, token } = response.data;
             localStorage.setItem('token',token);
             setUser(user);
@@ -77,7 +81,7 @@ export const AuthProvider = ({children})=>{
 
     const searchUser = async(query)=>{
         try {
-            const response = await axios.get(`${url}/search`,{
+            const response = await axios.get(`${url}/api/auth/search`,{
                 headers:{
                     Authorization: `Bearer ${token}`,
                 },
@@ -91,7 +95,7 @@ export const AuthProvider = ({children})=>{
 
     const logout = ()=>{
         try{
-            axios.post(`${url}/logout`);
+            axios.post(`${url}/api/auth/logout`);
             localStorage.removeItem('token');
             setUser(null);
             navigate('/login');
