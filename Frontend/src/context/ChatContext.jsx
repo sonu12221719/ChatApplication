@@ -20,7 +20,7 @@ export const ChatProvider = ({children})=>{
     const [onlineUsers, setOnlineUsers] = useState([]);
 
 
-    const url = 'http://localhost:3000';
+    const url = 'https://chatapplication-1-dqkc.onrender.com';
     const token = localStorage.getItem('token');
     
 
