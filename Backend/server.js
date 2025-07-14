@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 app.use(cors({
     // origin: ['https://chatapplication-1-dqkc.onrender.com/api/auth/login', 'http://localhost:5173'],
-    origin: ['*'],
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }))
@@ -22,7 +22,7 @@ const server = http.createServer(app);
 const io = new SocketIOServer(server, {
     cors: {
         // origin: ['https://chatapplication-1-dqkc.onrender.com/api/auth/login', 'http://localhost:5173'],
-        origin: ['*'],
+        origin: 'http://localhost:5173',
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         credentials: true,
     },
